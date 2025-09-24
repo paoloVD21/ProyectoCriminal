@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ProyectoCriminal</string>
+    <string name="pista_titulo_crimen">Ingrese un título para el crimen</string>
+    <string name="etiqueta_titulo_crimen">Título</string>
+    <string name="etiqueta_detalle_crimen">Detalle</string>
+    <string name="etiqueta_crimen_resuelto">Resuelto</string>
+</resources>

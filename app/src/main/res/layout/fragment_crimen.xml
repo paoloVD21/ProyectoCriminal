@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceHeadline5"
+        android:text="@string/etiqueta_titulo_crimen"/>
+
+    <EditText
+        android:id="@+id/txt_titulo_crimen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/pista_titulo_crimen"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:textAppearance="?attr/textAppearanceHeadline5"
+        android:textColorHint="#78909C" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceHeadline5"
+        android:text="@string/etiqueta_detalle_crimen"/>
+    <Button
+        android:id="@+id/btn_fecha_crimen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Mer Abr 05 14:20 EST 2022"/>
+    <CheckBox
+        android:id="@+id/chk_crimen_resuelto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/etiqueta_crimen_resuelto"/>
+</LinearLayout>
