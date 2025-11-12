@@ -32,7 +32,6 @@ class ListaCrimenesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Habilita la participación del fragmento en el menú de la forma clásica.
         setHasOptionsMenu(true)
     }
 
