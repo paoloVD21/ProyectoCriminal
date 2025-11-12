@@ -2,10 +2,15 @@ package com.ampn.proyectocriminal.control
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -15,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.ampn.proyectocriminal.R
 import com.ampn.proyectocriminal.databinding.FragmentCrimenBinding
 import com.ampn.proyectocriminal.datos.CrimenViewModel
 import com.ampn.proyectocriminal.datos.CrimenViewModelFactory
@@ -63,8 +69,6 @@ class CrimenFragment : Fragment() {
                 }
             }
 
-            // Se quita la línea 'isEnabled = false' para que el botón esté activo.
-            // El listener se configura aquí una sola vez, que es más eficiente.
             btnFechaCrimen.setOnClickListener {
                 crimenViewModel.crimen.value?.let { crimen ->
                     findNavController().navigate(
@@ -94,6 +98,27 @@ class CrimenFragment : Fragment() {
                 crimenViewModel.actualizarCrimen { it.copy(fecha = date) }
             }
         }
+
+        // Configuración del menú para eliminar.
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.fragment_crimen, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.eliminar_crimen -> {
+                        crimenViewModel.eliminarCrimen()
+                        // Se regresa a la pantalla anterior, como lo haría finish()
+                        findNavController().popBackStack()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        // FIN CAMBIO
     }
 
     private fun actualizarUI(crimen: Crimen) {

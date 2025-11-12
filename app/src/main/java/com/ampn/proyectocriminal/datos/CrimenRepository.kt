@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.room.Room
 import com.ampn.proyectocriminal.models.Crimen
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.UUID
-import kotlinx.coroutines.DelicateCoroutinesApi
 
 private const val DATABASE_NAME = "crimen-database"
 @OptIn(DelicateCoroutinesApi::class)
@@ -31,6 +31,12 @@ class CrimenRepository private constructor(context: Context,
     suspend fun ingresarCrimen(crimen: Crimen) {
         database.crimenDao().ingresarCrimen(crimen)
     }
+
+    // INICIO CAMBIO: Se añade la función que faltaba.
+    suspend fun eliminarCrimen(crimen: Crimen) {
+        database.crimenDao().eliminarCrimen(crimen)
+    }
+    // FIN CAMBIO
 
     companion object{
         private var INSTANCE: CrimenRepository? = null

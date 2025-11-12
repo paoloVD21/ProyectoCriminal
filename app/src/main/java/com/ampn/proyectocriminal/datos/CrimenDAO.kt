@@ -1,6 +1,7 @@
 package com.ampn.proyectocriminal.datos
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -15,9 +16,13 @@ interface CrimenDAO {
 
     @Query("SELECT * FROM Crimen WHERE id = (:id)")
     suspend fun getCrimen(id: UUID): Crimen
-    @Insert
-    suspend fun ingresarCrimen(crimen: Crimen)
 
     @Update
     suspend fun actualizarCrimen(crimen: Crimen)
+
+    @Insert
+    suspend fun ingresarCrimen(crimen: Crimen)
+
+    @Delete
+    suspend fun eliminarCrimen(crimen: Crimen)
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ampn.proyectocriminal.models.Crimen
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
+@OptIn(DelicateCoroutinesApi::class)
 class CrimenViewModel(crimenId: UUID) : ViewModel() {
     private val repositorio = CrimenRepository.get()
     private val _crimen: MutableStateFlow<Crimen?> = MutableStateFlow(null)
@@ -27,9 +29,22 @@ class CrimenViewModel(crimenId: UUID) : ViewModel() {
         }
     }
 
+    // Se añade la función para eliminar el crimen.
+    fun eliminarCrimen() {
+        crimen.value?.let {
+            viewModelScope.launch {
+                repositorio.eliminarCrimen(it)
+            }
+        }
+    }
+    // FIN CAMBIO
+
+    // Se ejecuta cuando el ViewModel se va a destruir. Ideal para guardar el estado final.
     override fun onCleared() {
         super.onCleared()
-            _crimen.value?.let { repositorio.actualizarCrimen(it) }
+        crimen.value?.let {
+            repositorio.actualizarCrimen(it)
+        }
     }
 }
 
@@ -41,4 +56,3 @@ class CrimenViewModelFactory (
         return CrimenViewModel(crimenId) as T
     }
 }
-
