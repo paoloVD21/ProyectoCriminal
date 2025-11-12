@@ -2,6 +2,8 @@
   <dictionary name="project">
     <words>
       <w>actualizar</w>
+      <w>anio</w>
+      <w>calendario</w>
       <w>cargar</w>
       <w>crimenes</w>
       <w>detalle</w>
@@ -10,6 +12,7 @@
       <w>fragmento</w>
       <w>ingresar</w>
       <w>ingrese</w>
+      <w>inicial</w>
       <w>inicializar</w>
       <w>lista</w>
       <w>miliseg</w>

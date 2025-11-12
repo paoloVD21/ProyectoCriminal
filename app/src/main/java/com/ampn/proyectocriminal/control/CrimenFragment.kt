@@ -1,72 +1,76 @@
 package com.ampn.proyectocriminal.control
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ampn.proyectocriminal.databinding.FragmentCrimenBinding
+import com.ampn.proyectocriminal.datos.CrimenViewModel
 import com.ampn.proyectocriminal.datos.CrimenViewModelFactory
 import com.ampn.proyectocriminal.models.Crimen
-import com.ampn.proyectocriminal.datos.CrimenViewModel
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.Date
 
-
-private const val TAG = "registroCriminal"
 class CrimenFragment : Fragment() {
-    private lateinit var crimen: Crimen
-    // realmente obtiene la referencia a la vista
-    private var _binding: FragmentCrimenBinding?=null
+    private var _binding: FragmentCrimenBinding? = null
     private val binding
-        get() = checkNotNull(_binding){
-
+        get() = checkNotNull(_binding) {
+            "No se puede acceder al binding porque es nulo. ¿La vista está creada?"
         }
 
     private val args: CrimenFragmentArgs by navArgs()
-    private val crimenViewModel: CrimenViewModel by viewModels(){
+    private val crimenViewModel: CrimenViewModel by viewModels() {
         CrimenViewModelFactory(args.crimenId)
     }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    // Se crea la vista del fragmento
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentCrimenBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    // Después de la creación de la vista
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Para todo lo que va dentro de aca se llamara al titulo
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (binding.txtTituloCrimen.text.toString().isBlank()) {
+                    Toast.makeText(requireContext(), "El título no puede estar vacío", Toast.LENGTH_SHORT).show()
+                } else {
+                    findNavController().popBackStack()
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
         binding.apply {
-            // aca se actualizara con el texto que se escribira
-            // doOnTextChanged -> es una funcion lambda en la cajita de texto, evento que se maneja con interfaces(implementa una funcional)
-            // recibe un texto cuando el interfaz esta corriendo
-            // texto, _, _, _ (son atributos, datos de entrada)
             txtTituloCrimen.doOnTextChanged { texto, _, _, _ ->
-                crimenViewModel.actualizarCrimen{ anterior ->
-                    anterior.copy(titulo=texto.toString())
+                crimenViewModel.actualizarCrimen { anterior ->
+                    anterior.copy(titulo = texto.toString())
                 }
             }
 
-            btnFechaCrimen.apply {
-                // text=crimen.fecha.toString()
-                isEnabled=false
+            // Se quita la línea 'isEnabled = false' para que el botón esté activo.
+            // El listener se configura aquí una sola vez, que es más eficiente.
+            btnFechaCrimen.setOnClickListener {
+                crimenViewModel.crimen.value?.let { crimen ->
+                    findNavController().navigate(
+                        CrimenFragmentDirections.mostrarDate(crimen.fecha)
+                    )
+                }
             }
 
             chkCrimenResuelto.setOnCheckedChangeListener { _, seleccionado ->
@@ -75,26 +79,33 @@ class CrimenFragment : Fragment() {
                 }
             }
         }
+
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
-                crimenViewModel.crimen.collect{ crimen ->
-                    crimen?.let {actualizarUI(crimen)}
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                crimenViewModel.crimen.collect { crimen ->
+                    crimen?.let { actualizarUI(it) }
                 }
             }
         }
-    }
 
-    private fun actualizarUI(crimen: Crimen){
-        binding.apply {
-            if(txtTituloCrimen.text.toString()!=crimen.titulo){
-                txtTituloCrimen.setText(crimen.titulo)
+        setFragmentResultListener(DatePickerFragment.CLAVE_FECHA_SOLICITADA) { _, bundle ->
+            val nuevaFecha = bundle.getSerializable(DatePickerFragment.CLAVE_FECHA_SELECCIONADA, Date::class.java)
+            nuevaFecha?.let { date ->
+                crimenViewModel.actualizarCrimen { it.copy(fecha = date) }
             }
-            btnFechaCrimen.text=crimen.fecha.toString()
-            chkCrimenResuelto.isChecked=crimen.resuelto
         }
     }
 
-    // se utiliza para eliminar el fragmento para que al inicializar se crea uno nuevo
+    private fun actualizarUI(crimen: Crimen) {
+        binding.apply {
+            if (txtTituloCrimen.text.toString() != crimen.titulo) {
+                txtTituloCrimen.setText(crimen.titulo)
+            }
+            btnFechaCrimen.text = crimen.fechaFormateada
+            chkCrimenResuelto.isChecked = crimen.resuelto
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

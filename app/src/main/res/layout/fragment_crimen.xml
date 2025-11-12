@@ -32,7 +32,7 @@
         android:id="@+id/btn_fecha_crimen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Mer Abr 05 14:20 EST 2022"/>
+        tools:text="@string/titulo_date_picker"/>
     <CheckBox
         android:id="@+id/chk_crimen_resuelto"
         android:layout_width="match_parent"

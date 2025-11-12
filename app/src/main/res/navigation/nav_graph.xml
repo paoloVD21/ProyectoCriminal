@@ -22,5 +22,16 @@
         <argument
             android:name="crimenId"
             app:argType="java.util.UUID" />
+        <action
+            android:id="@+id/mostrar_date"
+            app:destination="@id/datePickerFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/datePickerFragment"
+        android:name="com.ampn.proyectocriminal.control.DatePickerFragment"
+        android:label="DatePickerFragment" >
+        <argument
+            android:name="fechaCrimen"
+            app:argType="java.util.Date" />
+    </dialog>
 </navigation>

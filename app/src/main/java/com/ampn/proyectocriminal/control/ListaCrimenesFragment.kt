@@ -1,8 +1,10 @@
 package com.ampn.proyectocriminal.control
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -12,22 +14,33 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ampn.proyectocriminal.R
 import com.ampn.proyectocriminal.adaptadores.CrimenAdapter
 import com.ampn.proyectocriminal.databinding.FragmentListaCrimenesBinding
 import com.ampn.proyectocriminal.datos.ListaCrimenesViewModel
+import com.ampn.proyectocriminal.models.Crimen
 import kotlinx.coroutines.launch
+import java.util.Date
+import java.util.UUID
 
+@Suppress("DEPRECATION")
 class ListaCrimenesFragment : Fragment() {
     private val listaCrimenesViewModel: ListaCrimenesViewModel by viewModels()
     private var _binding: FragmentListaCrimenesBinding? = null
     private val binding
         get() = checkNotNull(_binding) { "No se puede acceder al binding porque es nulo. ¿La vista está creada?" }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Habilita la participación del fragmento en el menú de la forma clásica.
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentListaCrimenesBinding.inflate(inflater, container, false)
         binding.crimenRecyclerView.layoutManager = LinearLayoutManager(context)
         return binding.root
@@ -39,7 +52,7 @@ class ListaCrimenesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 listaCrimenesViewModel.crimenes.collect { crimenes ->
-                    binding.crimenRecyclerView.adapter = CrimenAdapter(crimenes){ crimenId ->
+                    binding.crimenRecyclerView.adapter = CrimenAdapter(crimenes) { crimenId ->
                         findNavController().navigate(ListaCrimenesFragmentDirections.mostrarCrimen(crimenId))
                     }
                 }
@@ -51,4 +64,37 @@ class ListaCrimenesFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    @Deprecated("Deprecated in Java")
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragmento_lista_crimenes, menu)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.nuevo_crimen -> {
+                mostraNuevoCrimen()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun mostraNuevoCrimen() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val nuevoCrimen = Crimen(
+                id = UUID.randomUUID(),
+                titulo = "",
+                fecha = Date(),
+                resuelto = false
+            )
+            listaCrimenesViewModel.ingresarCrimen(nuevoCrimen)
+            findNavController().navigate(
+                ListaCrimenesFragmentDirections.mostrarCrimen(nuevoCrimen.id)
+            )
+        }
+    }
+    // FIN CAMBIO
 }
