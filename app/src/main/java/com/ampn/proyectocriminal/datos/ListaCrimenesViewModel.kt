@@ -26,7 +26,8 @@ class ListaCrimenesViewModel : ViewModel() {
                     id = UUID.randomUUID(),
                     titulo = "Crimen de prueba #${i + 1}",
                     fecha = Date(),
-                    resuelto = false
+                    resuelto = false,
+                    sospechoso = "Hola"
                 )
                 crimenRepository.ingresarCrimen(crimen)
             }

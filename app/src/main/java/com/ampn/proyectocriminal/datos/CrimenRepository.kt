@@ -19,7 +19,7 @@ class CrimenRepository private constructor(context: Context,
         context.applicationContext,
         CrimenDatabase::class.java,
         DATABASE_NAME
-    ).build()
+    ).addMigrations(migration_1_2).build()
 
     fun actualizarCrimen(crimen: Crimen){
         coroutineScope.launch {

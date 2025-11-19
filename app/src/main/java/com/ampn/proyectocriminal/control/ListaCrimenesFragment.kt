@@ -51,11 +51,18 @@ class ListaCrimenesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 listaCrimenesViewModel.crimenes.collect { crimenes ->
+                    // Lógica para mostrar/ocultar la vista vacía.
                     binding.crimenRecyclerView.adapter = CrimenAdapter(crimenes) { crimenId ->
                         findNavController().navigate(ListaCrimenesFragmentDirections.mostrarCrimen(crimenId))
                     }
+                    binding.vistaVacia.visibility = if (crimenes.isEmpty()) View.VISIBLE else View.GONE
                 }
             }
+        }
+
+        // Acción para el nuevo botón para agrega un crimen en lista vacia.
+        binding.btnNuevoCrimen.setOnClickListener {
+            mostraNuevoCrimen()
         }
     }
 
@@ -87,7 +94,8 @@ class ListaCrimenesFragment : Fragment() {
                 id = UUID.randomUUID(),
                 titulo = "",
                 fecha = Date(),
-                resuelto = false
+                resuelto = false,
+                sospechoso = ""
             )
             listaCrimenesViewModel.ingresarCrimen(nuevoCrimen)
             findNavController().navigate(
@@ -95,5 +103,4 @@ class ListaCrimenesFragment : Fragment() {
             )
         }
     }
-    // FIN CAMBIO
 }

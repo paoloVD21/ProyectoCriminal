@@ -12,7 +12,8 @@ data class Crimen (
     val id: UUID,
     val titulo: String,
     val fecha: Date,
-    val resuelto: Boolean
+    val resuelto: Boolean,
+    val sospechoso: String
 ) {
     val fechaFormateada: String
         get() = DateFormat.format("EEEE, d 'de' MMMM 'de' yyyy", fecha).toString()

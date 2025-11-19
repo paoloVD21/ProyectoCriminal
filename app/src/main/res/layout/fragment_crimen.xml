@@ -32,10 +32,20 @@
         android:id="@+id/btn_fecha_crimen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="@string/titulo_date_picker"/>
+        android:text="@string/titulo_date_picker"/>
     <CheckBox
         android:id="@+id/chk_crimen_resuelto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/etiqueta_crimen_resuelto"/>
+    <Button
+        android:id="@+id/crimen_suspect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/boton_sospechoso"/>
+    <Button
+        android:id="@+id/crimen_reporte"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/boton_reporte"/>
 </LinearLayout>
